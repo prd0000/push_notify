@@ -17,7 +17,6 @@ class Notify:
         self.api_key = config.get('api_key')
         self.user_key = config.get('user_key')
         self.timeout = config.get('timeout', 10)
-        self.filename = filename.filename
 
         # Register commands
         self.gcode.register_command(
@@ -29,11 +28,7 @@ class Notify:
     def cmd_PUSH_NOTIFY(self, params):
         message = params.get('MSG', '')
         device_id = params.get('DEVICE', '')
-        title = params.get('TITLE', self.filename)
-
-        # self.gcode.respond_info(message_params)
-        # self.gcode.respond_info(device_id)
-        # self.gcode.respond_info(title)
+        title = params.get('TITLE', '')
 
         # send message
         self.gcode.respond_info(f"Sending {device_id} message: {title} - {message}");
