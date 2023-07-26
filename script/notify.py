@@ -1,3 +1,9 @@
+# Klipper extension for Pushover notification
+#
+# Copyright (C) 2023  Rudy Dajoh <prd0000@gmail.com>
+#
+# This file may be distributed under the terms of the GNU AGPLv3 license.
+
 import http.client, urllib
 
 class Notify:
