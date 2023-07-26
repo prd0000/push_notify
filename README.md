@@ -25,6 +25,14 @@ This simple script will add push notification capabilty to Klipper.
 
 Klipper is a open source 3D Printer firmware. If you want to install Klipper, you can go to [Klipper 3D](https://www.klipper3d.org/) for detailed instruction
 
+<h2 align="center"> 
+    What you need
+</h2>
+
+This script is using [Pushover](https://pushover.net/) to send push notification to your phone. So you will need an account at Pushover to start. Please follow the link for registration detail. 
+
+After you have registered, you'll receive your ***User key***. Then you have to create your ***API key*** for this script. 
+
 <h2 align="center">
     Installation
 </h2>
@@ -36,6 +44,19 @@ Klipper is a open source 3D Printer firmware. If you want to install Klipper, yo
 ![Alt text](resources/image.png)
 
 3. add this to your printer.cfg configuration
-{
-    
-}
+```
+[notify]
+api_key: <your api key>
+user_key: <your user key>
+```
+
+After you add the section, do `FIRMWARE_RESTART` at Klipper. 
+
+<h2 align="center">
+    Usage
+</h2>
+
+You can put it in any G-Code file like:
+
+`PUSH_NOTIFY DEVICE=<device> TITLE=<title> MSG=<message>`
+
