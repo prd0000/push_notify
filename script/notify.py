@@ -1,4 +1,4 @@
-import http.client, urllib, os, subprocess,json
+import http.client, urllib
 
 class Notify:
     def __init__(self, config) -> None:

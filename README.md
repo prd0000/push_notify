@@ -31,7 +31,7 @@ Klipper is a open source 3D Printer firmware. If you want to install Klipper, yo
 
 1. Download the source code of [notify.py](https://raw.githubusercontent.com/prd0000/push_notify/main/script/notify.py)
 
-2. Copy the script into `&lt;klipper folder&gt;/klippy/extras` folder
+2. Copy the script into `<klipper folder>/klippy/extras` folder
 
 ![Alt text](resources/image.png)
 
