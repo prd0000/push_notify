@@ -30,6 +30,11 @@ class Notify:
         device_id = params.get('DEVICE', '')
         title = params.get('TITLE', '')
 
+        # Help Message
+        if message == '':
+            self.gcode.respond_info('Klipper Push Notification module for PushOver.\nUSAGE: PUSH_NOTIFY MSG="message" DEVICE="deviceid" [TITLE="title"]\nDEVICE should be your device id in pushover.\nTITLE parameter is optional')
+            return
+
         # send message
         self.gcode.respond_info(f"Sending {device_id} message: {title} - {message}");
         conn = http.client.HTTPSConnection("api.pushover.net", 443,timeout = self.timeout)
@@ -42,6 +47,7 @@ class Notify:
             "message": message
         }), { "Content-type": "application/x-www-form-urlencoded" })
         response = conn.getresponse()
+
         message = response.read().decode()
         if response.status == 200:
             self.gcode.respond_info(f"{response.status} {response.reason}: {message}")

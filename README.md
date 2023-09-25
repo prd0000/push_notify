@@ -1,25 +1,17 @@
-<p align="center">
-  <a>
-    <h1 align="center">Push Notification for Klipper</h1>
-  </a>
-</p>
+# Push Notification for Klipper</h1>
 
-<p align="center">
+<p>
   <a><img src="https://img.shields.io/github/license/prd0000/push_notify"></a>
   <a><img src="https://img.shields.io/github/stars/prd0000/push_notify"></a>
   <a><img src="https://img.shields.io/github/forks/prd0000/push_notify"></a>
   <a><img src="https://img.shields.io/github/languages/top/prd0000/push_notify?logo=gnubash&logoColor=white"></a>
   <a><img src="https://img.shields.io/github/v/tag/prd0000/push_notify"></a>
-  <br />
   <a><img src="https://img.shields.io/github/last-commit/prd0000/push_notify"></a>
   <a><img src="https://img.shields.io/github/contributors/prd0000/push_notify"></a>
 </p>
 
-<hr>
 
-<h2 align="center">
-  Introduction
-</h2>
+## Introduction
 
 I have been wanting to make my printer notify me whenever it finishes any print for some time now. And after I heard about Klipper, I soon realize that it can use python to extend its functionality. So I wrote this script to help me. And I hope this script can help you, too. 
 
@@ -27,53 +19,83 @@ This simple script will add push notification capabilty to Klipper.
 
 Klipper is a open source 3D Printer firmware. If you want to install Klipper, you can go to [Klipper 3D](https://www.klipper3d.org/) for detailed instruction
 
-<h2 align="center"> 
-    What you need
-</h2>
+## What you need
 
-This script is using [Pushover](https://pushover.net/) to send push notification to your phone. So you will need an account at Pushover to start. Please follow the link for registration detail. 
 
-After you have registered, you'll receive your ***User key***. Then you have to create your ***API key*** for this script. 
+This script is using either [Pushover](https://pushover.net/) or the free [ntfy.sh](https://ntfy.sh/) to send push notification to your phone. 
 
-<h2 align="center">
-    Installation
-</h2>
+* Pushover service is more secure, but it is a paid service. To utilize Pushover, you will need an account at Pushover to start. Please follow the link for registration detail. After you have registered, you'll receive your ***User key***. Then you have to create your ***API key*** for this script. 
 
-1. Download the source code of [notify.py](https://raw.githubusercontent.com/prd0000/push_notify/main/script/notify.py)
+* ntfy.sh is a free service, and you can create any topic you like. Make sure the topic is unique enough to not receive other people's push notification. The topic is essentially your "password". I don't use private ntfy server because I don't deem a 3D printer notification such as out of filament or printing status to be something sensitive. To utilize ntfy.sh, you only need to pick up a topic, and match it to your phone and ***Topic*** entry at configuration file.
 
-2. Copy the script into `<klipper folder>/klippy/extras` folder
+## Installation
+
+<ol><li>
+
+Download the source code of [notify.py](https://raw.githubusercontent.com/prd0000/push_notify/main/script/notify.py) if you want to use Pushover, or [fcm.py](https://raw.githubusercontent.com/prd0000/push_notify/main/script/fcm.py) if you want to use ntfy.sh.
+
+<li> 
+
+Copy the script into `<klipper folder>/klippy/extras` folder. 
 
 ![Alt text](resources/image.png)
 
-3. add this to your printer.cfg configuration
+<li> 
+
+Add one of these to your `printer.cfg` configuration
 ```
 [notify]
 api_key: <your api key>
 user_key: <your user key>
 ```
 
+or
+```
+[fcm]
+topic: <your topic>
+```
+
+<li>
+
 After you add the section to printer.cfg, do `FIRMWARE_RESTART` at Klipper. 
+</ol>
 
-<h2 align="center">
-    Usage
-</h2>
+## Usage
 
-#### Syntax
+<ul><li>
+
+### Syntax
 You can put it in any G-Code file like:
 
-`PUSH_NOTIFY [DEVICE=<device>] [TITLE=<title>] MSG=<message>`
+```
+PUSH_NOTIFY MSG=<message> [DEVICE=<device>] [TITLE=<title>]
+```
 
-`DEVICE`: (optional) send a device id. This is corresponds to your device id registered at Pushoverr.
+```
+FCM_NOTIFY MSG=<message> [TITLE=<title>]
+```
 
-`TITLE`: (optional) put a title to the message. If you omit this, the script will default to empty string
 
-`MSG`: (mandatory) is the message that you are going to send to your phone.
+* `MSG`: (mandatory) is the message that you are going to send to your phone.
 
-#### Command example:
+* `DEVICE`: (optional) send a device id. This is corresponds to your device id registered at Pushoverr.
 
-`PUSH_NOTIFY DEVICE="my_phone" TITLE="filename.gcode" MSG="printing done"`
+* `TITLE`: (optional) put a title to the message. If you omit this, the script will default to empty string
 
-#### Macro example
+
+<li>
+
+### Command example:
+
+```
+PUSH_NOTIFY DEVICE="my_phone" TITLE="filename.gcode" MSG="printing done"
+```
+```
+FCM_NOTIFY TITLE="filename.gcode" MSG="printing done"
+```
+<li>
+
+### Macro example
 
 Or you can also put it in your macro like:
 
@@ -96,5 +118,7 @@ gcode:
     PUSH_NOTIFY MSG="Printing Done"
 
 ```
+
+</ul>
 
 Enjoy
