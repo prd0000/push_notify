@@ -1,11 +1,11 @@
-<h1>Change Log</h1>
+# Change Log
 
-<h2>25 September 2023</h2>
-<ul>
-<li>Added FCM push notification
-<li>Added help file if you forget to include MSG parameter
-</ul>
+## 2023/09/25 - Release
 
-<h2>Initial Release</h2>
-    <ul><li>Initial Release<li>Pushover notification</ul>
+* Added FCM push notification
+* Added help file if you forget to include `MSG` parameter
+
+## Initial Release
+* Initial Release
+* Pushover notification</ul>
 
