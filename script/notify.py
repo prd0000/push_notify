@@ -29,6 +29,7 @@ class Notify:
         message = params.get('MSG', '')
         device_id = params.get('DEVICE', '')
         title = params.get('TITLE', '')
+        sound = params.get('SOUND', '')
 
         # Help Message
         if message == '':
@@ -44,6 +45,7 @@ class Notify:
             "user": self.user_key,
             "device": device_id,
             "title": title,
+            "sound": sound,
             "message": message
         }), { "Content-type": "application/x-www-form-urlencoded" })
         response = conn.getresponse()

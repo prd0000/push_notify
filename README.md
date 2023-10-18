@@ -68,7 +68,7 @@ After you add the section to printer.cfg, do `FIRMWARE_RESTART` at Klipper.
 You can put it in any G-Code file like:
 
 ```
-PUSH_NOTIFY MSG=<message> [DEVICE=<device>] [TITLE=<title>]
+PUSH_NOTIFY MSG=<message> [DEVICE=<device>] [TITLE=<title>] [SOUND=<sound>]
 ```
 
 ```
@@ -81,6 +81,8 @@ FCM_NOTIFY MSG=<message> [TITLE=<title>]
 * `DEVICE`: (optional) send a device id. This is corresponds to your device id registered at Pushoverr.
 
 * `TITLE`: (optional) put a title to the message. If you omit this, the script will default to empty string
+
+* `SOUND`: (optional) use a specific sound for the notification (Credits to [@Xierion](https://github.com/Xierion))
 
 
 <li>
