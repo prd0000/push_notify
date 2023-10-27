@@ -16,6 +16,8 @@ class FCM:
         # configuration
         self.topic = config.get('topic', "printer")
         self.timeout = config.get('timeout', 10)
+        self.server = config.get('server', "ntfy.sh")
+        self.serverport = config.get('serverport', "443")
 
         # Register commands
         self.gcode.register_command(
@@ -34,16 +36,17 @@ class FCM:
 
         # send message
         self.gcode.respond_info(f"Sending FCM message: {title} - {message}");
-        
-        conn = http.client.HTTPSConnection("ntfy.sh", 443,timeout = self.timeout)
-        conn.request("POST", f"/{self.topic}", message, { "Content-type": "application/x-www-form-urlencoded", "Title": title, "Priority": 3 })
-        response = conn.getresponse()
+        try:
+            conn = http.client.HTTPSConnection(f"{self.server}", f"{self.serverport}",timeout = self.timeout)
+            conn.request("POST", f"/{self.topic}", message, { "Content-type": "application/x-www-form-urlencoded", "Title": title, "Priority": 3 })
+            response = conn.getresponse()
 
-        message = response.read().decode()
-        if response.status == 200:
-            self.gcode.respond_info(f"{response.status} {response.reason}: {message}")
-        else:
-            raise self.gcode.error(f"{response.status} {response.reason}: {message}")
+            message = response.read().decode()
+            if response.status == 200:
+                self.gcode.respond_info(f"{response.status} {response.reason}: {message}")
+            else:
+                raise self.gcode.error(f"{response.status} {response.reason}: {message}")
+            
 
 def load_config(config):
     return FCM(config)
