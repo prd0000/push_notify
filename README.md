@@ -53,6 +53,8 @@ or
 ```
 [fcm]
 topic: <your topic>
+server: <your ntfy hostname, requires tls #OPTIONAL defaults to NTFY.SH>
+serverport: <your ntfy server port, requires tls #OPTIONAL defaults to 443>
 ```
 
 <li>
