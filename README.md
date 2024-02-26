@@ -22,17 +22,19 @@ Klipper is a open source 3D Printer firmware. If you want to install Klipper, yo
 ## What you need
 
 
-This script is using either [Pushover](https://pushover.net/) or the free [ntfy.sh](https://ntfy.sh/) to send push notification to your phone. 
+This script is using either [Pushover](https://pushover.net/), the free [ntfy.sh](https://ntfy.sh/), or [Pushbullet](https://www.pushbullet.com/) to send push notification to your phone. 
 
 * Pushover service is more secure, but it is a paid service. To utilize Pushover, you will need an account at Pushover to start. Please follow the link for registration detail. After you have registered, you'll receive your ***User key***. Then you have to create your ***API key*** for this script. 
 
 * ntfy.sh is a free service, and you can create any topic you like. Make sure the topic is unique enough to not receive other people's push notification. The topic is essentially your "password". I don't use private ntfy server because I don't deem a 3D printer notification such as out of filament or printing status to be something sensitive. To utilize ntfy.sh, you only need to pick up a topic, and match it to your phone and ***Topic*** entry at configuration file.
 
+* [Pushbullet](https://www.pushbullet.com/) ... "connects your devices, making them feel like one." To use Pushbullet you'll need to generate an ***Access Token*** for your Pushbullet user account to be used when implementing this script. This script currently only implements the "note" type of notification, allowing a title and a message to be sent for the push notification.
+
 ## Installation
 
 <ol><li>
 
-Download the source code of [notify.py](https://raw.githubusercontent.com/prd0000/push_notify/main/script/notify.py) if you want to use Pushover, or [fcm.py](https://raw.githubusercontent.com/prd0000/push_notify/main/script/fcm.py) if you want to use ntfy.sh.
+Download the source code of [notify.py](https://raw.githubusercontent.com/prd0000/push_notify/main/script/notify.py) if you want to use Pushover, or [fcm.py](https://raw.githubusercontent.com/prd0000/push_notify/main/script/fcm.py) if you want to use ntfy, or [pushbullet.py](https://raw.githubusercontent.com/prd0000/push_notify/main/script/pushbullet.py) if you want to use Pushbullet.
 
 <li> 
 
@@ -57,6 +59,12 @@ server: <your ntfy hostname, requires tls #OPTIONAL defaults to NTFY.SH>
 serverport: <your ntfy server port, requires tls #OPTIONAL defaults to 443>
 ```
 
+or
+```
+[pushbullet]
+pb_access_token: <your access token>
+```
+
 <li>
 
 After you add the section to printer.cfg, do `FIRMWARE_RESTART` at Klipper. 
@@ -77,12 +85,16 @@ PUSH_NOTIFY MSG=<message> [DEVICE=<device>] [TITLE=<title>] [SOUND=<sound>]
 FCM_NOTIFY MSG=<message> [TITLE=<title>]
 ```
 
+```
+PUSHBULLET_NOTIFY MSG=<message> TITLE=<title>
+```
+
 
 * `MSG`: (mandatory) is the message that you are going to send to your phone.
 
 * `DEVICE`: (optional) send a device id. This is corresponds to your device id registered at Pushoverr.
 
-* `TITLE`: (optional) put a title to the message. If you omit this, the script will default to empty string
+* `TITLE`: (optional, mandatory for pushbullet) put a title to the message. If you omit this, the script will default to empty string
 
 * `SOUND`: (optional) use a specific sound for the notification (Credits to [@Xierion](https://github.com/Xierion))
 
@@ -96,6 +108,9 @@ PUSH_NOTIFY DEVICE="my_phone" TITLE="filename.gcode" MSG="printing done"
 ```
 ```
 FCM_NOTIFY TITLE="filename.gcode" MSG="printing done"
+```
+```
+PUSHBULLET_NOTIFY TITLE="Klipper" MSG="printing done"
 ```
 <li>
 
