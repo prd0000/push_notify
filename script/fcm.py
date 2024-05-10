@@ -24,7 +24,7 @@ class FCM:
             "FCM_NOTIFY", 
             self.cmd_FCM_NOTIFY, 
             desc=self.cmd_FCM_NOTIFY_help)
-    
+
     cmd_FCM_NOTIFY_help = "Sending message to FCM server"
     def cmd_FCM_NOTIFY(self, params):
         message = params.get('MSG', '')
@@ -46,7 +46,7 @@ class FCM:
                 self.gcode.respond_info(f"{response.status} {response.reason}: {message}")
             else:
                 raise self.gcode.error(f"{response.status} {response.reason}: {message}")
-            
+
 
 def load_config(config):
     return FCM(config)
