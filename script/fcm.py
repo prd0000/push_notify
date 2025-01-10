@@ -46,7 +46,8 @@ class FCM:
                 self.gcode.respond_info(f"{response.status} {response.reason}: {message}")
             else:
                 raise self.gcode.error(f"{response.status} {response.reason}: {message}")
-
+        except Exception as e:
+            raise self.gcode.error(f"Error: {e}")
 
 def load_config(config):
     return FCM(config)
