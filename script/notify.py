@@ -37,24 +37,26 @@ class Notify:
             return
 
         # send message
-        self.gcode.respond_info(f"Sending {device_id} message: {title} - {message}");
-        conn = http.client.HTTPSConnection("api.pushover.net", 443,timeout = self.timeout)
-        conn.request("POST", "/1/messages.json",
-        urllib.parse.urlencode({
-            "token": self.api_key,
-            "user": self.user_key,
-            "device": device_id,
-            "title": title,
-            "sound": sound,
-            "message": message
-        }), { "Content-type": "application/x-www-form-urlencoded" })
-        response = conn.getresponse()
-
-        message = response.read().decode()
-        if response.status == 200:
-            self.gcode.respond_info(f"{response.status} {response.reason}: {message}")
-        else:
-            raise self.gcode.error(f"{response.status} {response.reason}: {message}")
+        try:
+            self.gcode.respond_info(f"Sending {device_id} message: {title} - {message}");
+            conn = http.client.HTTPSConnection("api.pushover.net", 443,timeout = self.timeout)
+            conn.request("POST", "/1/messages.json",
+            urllib.parse.urlencode({
+                "token": self.api_key,
+                "user": self.user_key,
+                "device": device_id,
+                "title": title,
+                "sound": sound,
+                "message": message
+            }), { "Content-type": "application/x-www-form-urlencoded" })
+            response = conn.getresponse()
+            message = response.read().decode()
+            if response.status == 200:
+                self.gcode.respond_info(f"{response.status} {response.reason}: {message}")
+            else:
+                raise self.gcode.error(f"{response.status} {response.reason}: {message}")
+        except Exception as e:
+            raise self.gcode.error(f"Error: {e}")
 
 def load_config(config):
     return Notify(config)
