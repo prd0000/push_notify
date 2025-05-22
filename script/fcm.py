@@ -1,4 +1,4 @@
-# Klipper extension for Pushover notification
+# Klipper extension for ntfy notification
 #
 # Copyright (C) 2023  Rudy Dajoh <prd0000@gmail.com>
 #

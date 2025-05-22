@@ -36,6 +36,12 @@ This script is using either [Pushover](https://pushover.net/), the free [ntfy.sh
 
 Download the source code of [notify.py](https://raw.githubusercontent.com/prd0000/push_notify/main/script/notify.py) if you want to use Pushover, or [fcm.py](https://raw.githubusercontent.com/prd0000/push_notify/main/script/fcm.py) if you want to use ntfy, or [pushbullet.py](https://raw.githubusercontent.com/prd0000/push_notify/main/script/pushbullet.py) if you want to use Pushbullet.
 
+For `notify.py` or `pushbullet.py` you must also install `requests` by running the following command.
+
+```shell
+~/klippy-env/bin/pip install requests
+```
+
 <li> 
 
 Copy the script into `<klipper folder>/klippy/extras` folder. 
