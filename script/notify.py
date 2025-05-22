@@ -6,6 +6,16 @@
 
 import requests
 
+HELP='''
+Klipper Push Notification module for PushOver.
+USAGE: PUSH_NOTIFY MSG="message" DEVICE="deviceid" [TITLE="title" SOUND="sound" PRIORITY=0 RETRY=30 EXPIRE=90]
+DEVICE should be your device id in pushover.
+TITLE, SOUND, PRIORITY, RETRY, and EXPIRE parameters are optional
+PRIORITY can be between -2 and 2
+RETRY must be greater than or equal to 30 if specified
+EXPIRE must be between RETRY and 10800
+'''
+
 class Notify:
     def __init__(self, config) -> None:
         self.name = config.get_name().split()[-1]
@@ -35,7 +45,7 @@ class Notify:
 
         # Help Message
         if message == '':
-            self.gcode.respond_info('Klipper Push Notification module for PushOver.\nUSAGE: PUSH_NOTIFY MSG="message" DEVICE="deviceid" [TITLE="title"]\nDEVICE should be your device id in pushover.\nTITLE parameter is optional')
+            self.gcode.respond_info(HELP)
             return
 
         # send message
@@ -56,11 +66,11 @@ class Notify:
         try:
             self.gcode.respond_info(f'Sending {device_id} message: {title} - {message}')
             r = requests.post('https://api.pushover.net/1/messages.json', data=data)
-            message = r.content
+            resp_message = r.json()
             if r.ok:
-                self.gcode.respond_info(f'{r.status_code} {r.reason}: {message}')
+                self.gcode.respond_info(f'{r.status_code} {r.reason}: {resp_message}')
             else:
-                raise self.gcode.error(f'{r.status_code} {r.reason}: {message}')
+                raise self.gcode.error(f'{r.status_code} {r.reason}: {resp_message}')
         except Exception as e:
             raise self.gcode.error(f'Error: {e}')
 
