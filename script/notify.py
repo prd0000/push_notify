@@ -54,8 +54,9 @@ class Notify:
                 'expire': expire,
             })
         try:
-            self.gcode.respond_info(f'Sending {device_id} message: {title} - {message}');
+            self.gcode.respond_info(f'Sending {device_id} message: {title} - {message}')
             r = requests.post('https://api.pushover.net/1/messages.json', data=data)
+            message = r.content
             if r.ok:
                 self.gcode.respond_info(f'{r.status_code} {r.reason}: {message}')
             else:
