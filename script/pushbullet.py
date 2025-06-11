@@ -4,8 +4,6 @@
 #
 # This file may be distributed under the terms of the GNU AGPLv3 license.
 
-import sys
-sys.path.append("/usr/lib/python3/dist-packages")
 import requests
 from requests.structures import CaseInsensitiveDict
 
