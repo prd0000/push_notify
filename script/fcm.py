@@ -3,10 +3,10 @@
 # Copyright (C) 2023  Rudy Dajoh <prd0000@gmail.com>
 #
 # This file may be distributed under the terms of the GNU AGPLv3 license.
-
+import threading
 import http.client, urllib
 
-class FCM:
+class FCM:    
     def __init__(self, config) -> None:
         self.name = config.get_name().split()[-1]
         self.printer = config.get_printer()
@@ -35,19 +35,30 @@ class FCM:
             return
 
         # send message
-        self.gcode.respond_info(f"Sending FCM message: {title} - {message}");
+        self.gcode.respond_info(f"Sending {self.server}: {title} - {message}");
+        
+        thread = threading.Thread(target=self.send_notification, args=(title, message), daemon=True)
+        thread.start()
+        
+
+    def send_notification(self, title, message):
         try:
             conn = http.client.HTTPSConnection(f"{self.server}", f"{self.serverport}",timeout = self.timeout)
             conn.request("POST", f"/{self.topic}", message, { "Content-type": "application/x-www-form-urlencoded", "Title": title, "Priority": 3 })
             response = conn.getresponse()
 
-            message = response.read().decode()
+            # self.gcode.respond_info(f"FCM server response status: {response.status}")   
+            body = response.read().decode()
             if response.status == 200:
-                self.gcode.respond_info(f"{response.status} {response.reason}: {message}")
+                self.gcode.respond_info(f"{response.status} {response.reason}: {body}")
             else:
-                raise self.gcode.error(f"{response.status} {response.reason}: {message}")
+                raise self.gcode.error(f"{response.status} {response.reason}: {body}")
+                
+            conn.close()
+                
         except Exception as e:
             raise self.gcode.error(f"Error: {e}")
+
 
 def load_config(config):
     return FCM(config)
