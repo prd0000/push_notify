@@ -13,121 +13,212 @@
 
 ## Introduction
 
-I have been wanting to make my printer notify me whenever it finishes any print for some time now. And after I heard about Klipper, I soon realize that it can use python to extend its functionality. So I wrote this script to help me. And I hope this script can help you, too. 
+I wanted my printer to notify me whenever a print finished. After discovering Klipper, I realized it supports Python extensions, making it easy to add custom functionality. This script was created to send push notifications from Klipper, and hopefully it can be useful for others as well.
 
-This simple script will add push notification capabilty to Klipper. 
+This module adds push notification capability to Klipper.
 
-Klipper is a open source 3D Printer firmware. If you want to install Klipper, you can go to [Klipper 3D](https://www.klipper3d.org/) for detailed instruction
+Klipper is an open-source firmware for 3D printers. If you want to install Klipper, visit the official documentation [Klipper 3D](https://www.klipper3d.org/) for detailed instruction
+
+## Features
+
+<ul><li> Send push notification directly using GCODE
+<li> Supports any HTTP-based notification service
+<li> Two configuration modes:
+<ul><li> Raw Mode -- Full Manual configuration
+<li> Template Mode -- Simplified configuration using predefined templates
+</ul>
+<li> Supports optional parameters
+<li> Works in any G-CODE commands or macros.
+</ul>
+
 
 ## What you need
 
+<ul><li>A running Klipper installation
+<li>
+An account on any push notification service.
+<li> The API information required by that service (URL, headers, tokens, etc.)
+</ul>
 
-This script is using either [Pushover](https://pushover.net/), the free [ntfy.sh](https://ntfy.sh/), or [Pushbullet](https://www.pushbullet.com/) to send push notification to your phone. 
+<br/>
 
-* Pushover service is more secure, but it is a paid service. To utilize Pushover, you will need an account at Pushover to start. Please follow the link for registration detail. After you have registered, you'll receive your ***User key***. Then you have to create your ***API key*** for this script. 
+# Installation
 
-* ntfy.sh is a free service, and you can create any topic you like. Make sure the topic is unique enough to not receive other people's push notification. The topic is essentially your "password". I don't use private ntfy server because I don't deem a 3D printer notification such as out of filament or printing status to be something sensitive. To utilize ntfy.sh, you only need to pick up a topic, and match it to your phone and ***Topic*** entry at configuration file.
+<ol>
 
-* [Pushbullet](https://www.pushbullet.com/) ... "connects your devices, making them feel like one." To use Pushbullet you'll need to generate an ***Access Token*** for your Pushbullet user account to be used when implementing this script. This script currently only implements the "note" type of notification, allowing a title and a message to be sent for the push notification.
+**<li> Download these files from the extra folder:**
 
-## Installation
+    notify.py
+    server_template.py
 
-<ol><li>
-
-Download the source code of [notify.py](https://raw.githubusercontent.com/prd0000/push_notify/main/script/notify.py) if you want to use Pushover, or [fcm.py](https://raw.githubusercontent.com/prd0000/push_notify/main/script/fcm.py) if you want to use ntfy, or [pushbullet.py](https://raw.githubusercontent.com/prd0000/push_notify/main/script/pushbullet.py) if you want to use Pushbullet.
-
-For `notify.py` or `pushbullet.py` you must also install `requests` by running the following command.
-
-```shell
-~/klippy-env/bin/pip install requests
-```
-
-<li> 
-
-Copy the script into `<klipper folder>/klippy/extras` folder. 
+**<li>  Copy both files into `<klipper folder>/klippy/extras` folder. **
 
 ![Alt text](resources/image.png)
 
-<li> 
+**<li> Configure your `printer.cfg`**
 
-Add one of these to your `printer.cfg` configuration
-```
-[notify]
-api_key: <your api key>
-user_key: <your user key>
-```
+Add a `[notify]` section to your configuration\
+See the Configuration section below
 
-or
+**<li> Use `NOTIFY` command**
+
+Example:
+
 ```
-[fcm]
-topic: <your topic>
-server: <your ntfy hostname, requires tls #OPTIONAL defaults to NTFY.SH>
-serverport: <your ntfy server port, requires tls #OPTIONAL defaults to 443>
+NOTIFY MSG="Printing Done" DEVICE="Creality" TITLE="Model.gcode"" SOUND="alert.mp3"
 ```
 
-or
-```
-[pushbullet]
-pb_access_token: <your access token>
-```
+**<li> Restart Klipper**
 
-<li>
+`sudo systemctl restart klipper`
 
-After you add the section to printer.cfg, do `FIRMWARE_RESTART` at Klipper. 
+</ol>
+<br/>
+
+# Configuration
+
+
+Push Notify supports two configuration modes:
+
+<ol><li> Raw Mode
+<li> Template Mode
 </ol>
 
-## Usage
+## Raw Mode
 
+In Raw Mode, all request parameters must be defined manually inside `printer.cfg`.
+
+Required options:
+
+<ul>
+<li>url
+<li>headers
+<li>body
+<li>method
+</ul>
+
+Example confguration for Raw Mode:
+
+```
+[notify]
+url: https://ntfy.sh/MyPrinter
+timeout: 10
+method: POST
+headers:
+    Content-Type: application/x-www-form-urlencoded
+    Priority: urgent
+    [Title: {TITLE}]
+body:
+    {MSG}
+```
+
+This will send a POST request to ntfy when `NOTIFY` called in GCode
+
+> Note: 
+`timeout` option is optional, and will default to 10s if omitted. This option is available in both Raw and Template Mode.
+
+## Template Mode
+
+Template Mode allows you to use predefined server templates.
+
+In template mode, you only need to supply the parameters required by that template. 
+
+Example:
+
+```
+[notify]
+template: ntfy
+topic: MyPrinter
+```
+
+Templates are defined in `server_template.py`.
+
+Example template:
+
+```
+TEMPLATES = {
+    'ntfy': {
+        "url": 'https://ntfy.sh/{topic}',
+        "headers": """
+            Content-Type: application/x-www-form-urlencoded
+            Priority: urgent
+            [Title: {TITLE}]
+        """,
+        'body': '{MSG}',
+        'method': 'POST'
+    }
+}
+```
+
+## Template Variables
+Whether in `server_template.py` or `printer.cfg`, templates support dynamic variables using curly braces `{}`.
+
+Example:
+
+    {MSG}
+    {TITLE}
+    {topic}
+
+Rules:
 <ul><li>
-
-### Syntax
-You can put it in any G-Code file like:
-
-```
-PUSH_NOTIFY MSG=<message> [DEVICE=<device>] [TITLE=<title>] [SOUND=<sound>]
-```
-
-```
-FCM_NOTIFY MSG=<message> [TITLE=<title>]
-```
-
-```
-PUSHBULLET_NOTIFY MSG=<message> TITLE=<title>
-```
-
-
-* `MSG`: (mandatory) is the message that you are going to send to your phone.
-
-* `DEVICE`: (optional) send a device id. This is corresponds to your device id registered at Pushoverr.
-
-* `TITLE`: (optional, mandatory for pushbullet) put a title to the message. If you omit this, the script will default to empty string
-
-* `SOUND`: (optional) use a specific sound for the notification (Credits to [@Xierion](https://github.com/Xierion))
-
-
+Variables must contain only alphanumeric characters
+<li>
+Variables cannot start with a number
+<li>
+UPPERCASE variables are filled from the GCODE command
 <li>
 
-### Command example:
+lowercase variables are taken from `printer.cfg`. 
+> **Note:** Lowercase variables is not supported in **Raw Mode**
+
+</ul>
+
+### Optional Variables
+
+Variable wrapped inside square brackets `[]` are optional.
+
+Example:
 
 ```
-PUSH_NOTIFY DEVICE="my_phone" TITLE="filename.gcode" MSG="printing done"
+[Title: {TITLE}
+----]
+{MSG}
 ```
-```
-FCM_NOTIFY TITLE="filename.gcode" MSG="printing done"
-```
-```
-PUSHBULLET_NOTIFY TITLE="Klipper" MSG="printing done"
-```
-<li>
 
-### Macro example
+If `{TITLE}` is not provided, the **entire block** will be removed. 
 
+`NOTIFY MSG="Printing done" TITLE="Model.gcode"`
+
+
+```
+Title: Model.gcode
+----
+Printing done
+```
+
+or removed completely if no title is provided 
+
+`NOTIFY MSG="Printing done"`
+
+```
+Printing done
+```
+
+<br/>
+
+# Usage
+
+
+You can put it in any G-Code command like:
+
+```
+NOTIFY DEVICE="my_phone" TITLE="filename.gcode" MSG="printing done"
+```
 Or you can also put it in your macro like:
 
 ```
 [gcode_macro END_PRINT]
 gcode:
-
     # Turn off bed, extruder, and fan
     M140 S0
     M104 S0
@@ -139,11 +230,18 @@ gcode:
     G1 X10 Y300 F3000
     # Disable steppers
     M84
-    # Notify User
-    PUSH_NOTIFY MSG="Printing Done"
-
+    NOTIFY MSG="Done"
 ```
+<br/>
 
-</ul>
+# License
 
-Enjoy
+This project is released under the GNU AGPLv3 License.
+
+<br/>
+
+# Contributing
+
+Contributions and new templates for other notification services are welcome.
+
+If you create a new template, simply add it to `server_template.py`

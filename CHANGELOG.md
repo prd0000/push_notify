@@ -1,5 +1,11 @@
 # Change Log
 
+## 2026/03/05 - Release
+* Updated to v1.0
+* Code overhaul
+* Template engine
+* Updated to python 3.13 for template support
+
 ## 2026/02/11 - Release
 * Added Threading to FCM to prevent IO operation interfere with main klipper code
 * Improve compatibility with python 2
