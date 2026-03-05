@@ -37,7 +37,7 @@ class Pushbullet:
         self.gcode.respond_info(f"Sending message: {title} - {message}");
 
         # now send the message using pushbullet
-        headers = CaseInsensitiveDict()
+        headers = CaseInsensitiveDict()y
         headers["Access-Token"] = self.pb_access_token
         headers["Content-Type"] = "application/json"
         data = '{"body":"' + message + '","title":"' + title + '","type":"note"}'

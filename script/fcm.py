@@ -7,7 +7,7 @@ import threading
 import http.client, urllib
 
 class FCM:    
-    def __init__(self, config) -> None:
+    def __init__(self, config):
         self.name = config.get_name().split()[-1]
         self.printer = config.get_printer()
         self.gcode = self.printer.lookup_object('gcode')
