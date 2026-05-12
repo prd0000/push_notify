@@ -41,6 +41,6 @@ TEMPLATES = {
             Content-Type: application/json
         """,
         "body":
-            {"body":"{MSG}"[,"title":"{TITLE}"],"type":"note"}',
+            '{"body":"{MSG}"[,"title":"{TITLE}"],"type":"note"}',
     }
 }
