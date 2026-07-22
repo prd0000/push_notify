@@ -109,7 +109,7 @@ class Notify:
                 }
             finally:
                 conn.close()
-                return result
+            return result
 
         # Gather all parameters
         parameters = self.config

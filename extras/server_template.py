@@ -40,7 +40,6 @@ TEMPLATES = {
             Access-Token: {token}
             Content-Type: application/json
         """,
-        "body":
-            '{"body":"{MSG}"[,"title":"{TITLE}"],"type":"note"}',
+        "body": '{{"body":"{MSG}"[,"title":"{TITLE}"],"type":"note"}}'
     }
 }
